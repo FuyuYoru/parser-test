@@ -54,13 +54,13 @@ async function createPage(browser, url) {
 	await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
 
 	await page.setRequestInterception(true);
-  page.on('request', (req) => {
-    if (['image', 'stylesheet', 'font', 'script'].includes(req.resourceType())) {
-      req.abort();
-    } else {
-      req.continue();
-    }
-  });
+	page.on('request', (req) => {
+		if (['image', 'stylesheet', 'font', 'script'].includes(req.resourceType())) {
+			req.abort();
+		} else {
+			req.continue();
+		}
+	});
 
 	return page;
 }
@@ -86,6 +86,7 @@ async function createPage(browser, url) {
 		await page.waitForSelector('body');
 		allProducts.push(...pageProducts);
 		console.log(`Информация о товарах с страницы №${i + 1} успешно собрана и сохранена в output.csv\n Добавлено записей: ${allProducts.length}`);
+		await page.close();
 	}
 	await csvWriter.writeRecords(allProducts);
 	await browser.close()
