@@ -53,6 +53,15 @@ async function createPage(browser, url) {
 
 	await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
 
+	await page.setRequestInterception(true);
+  page.on('request', (req) => {
+    if (['image', 'stylesheet', 'font', 'script'].includes(req.resourceType())) {
+      req.abort();
+    } else {
+      req.continue();
+    }
+  });
+
 	return page;
 }
 
